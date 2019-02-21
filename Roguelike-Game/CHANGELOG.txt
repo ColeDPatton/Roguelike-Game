@@ -1,0 +1,158 @@
+ 
+9/2 Started working on adding paths connecting the rooms. First idea was to 
+simply take the
+top left corner of the first room in the array and add a + or - 1 to the x 
+direction until
+it's the same x value as the top left corner of the second room in the array. 
+Then do the
+same in the y direction.
+9/2 Try to add some "realism" to the paths. Made a point in-between the two 
+rooms and
+generate a path to the mid point first, then the second room.
+9/2 Added a random x and y value to the midpoint to make it look more random. 
+9/2 BUG FOUND. In rare cases, adding the random x/y value would cause to 
+midpoint to be 
+placed outside of the 2d MAP array. Added a check to move the midpoint back 
+in-bounds if 
+it was outside the array.
+9/2 Added more midpoints between the two rooms to get more natural looking 
+paths. Add a 
+"distance" check, and the further away the rooms are, the more midpoints I 
+generate.
+
+9/3 BUG FOUND. On a rare occasion, if two rooms shared the same x or y value, 
+the distance
+equation would end up dividing by 0. Added a check that adds 2 to the first 
+room's x or
+y value, just for the distance calculation.
+9/3 Added a border around the map.
+
+9/5 PLAN ON CHANGING: If the first room in the rooms array is far left, and the 
+second
+is far right, and then third is far left, and fourth is right and so on; the 
+paths go back
+and forth across the map giving a very large, clustered, gross, mess of paths 
+in the
+middle of the map. Considering sorting the rooms array by x values to avoid 
+this? Maybe 
+this is what the dykstra's shortest path algorithm is for?
+9/5 Looked at the next part of the assignment. Got confused. Gave up. 
+
+9/9 Added a "generateHardness()" function. After loading the map array, I can 
+now call this 
+function to make a second array, to act as a "lookup table" to give a random 
+hardness between 
+1 and 254 to the "rock" spaces.
+
+9/9 Started working on a "loadDungeon" function to start reading bytes from a 
+file and using 
+them to create a dungeon. Created a file pointer to open and read from. Read 
+the first 12 
+bytes as chars for the file marker. Then read four bytes for the file version 
+marker. Not sure
+what to do with these so I'm just printing them out. Continue doing the same 
+things for the 
+file size and player location
+
+9/10 Found out I could read in the entire hardness array from the file at once. 
+Once the 
+array is stored in a "hardness[1680]" variable, I read it all into my 
+hardnessMap. If I find 
+a point in the array with hardness equal to 0, I set it to 2 in my map so that 
+it's refered to 
+as a path.
+
+9/12 Read in the data for the rooms so I can change my map from all being a 
+path, to an actual
+dungeon with rooms. Created a "saveDungeon" function to print my dungeon data 
+to a file following
+the guidelines from the assignment description. 
+
+9/12 Implementing my new methods into the "main" function. If the agrument 
+"--load" is passed, 
+I load the dungeon from file before I do anything else. If not, I create a new 
+dungeon. Then, 
+if "--save" is passed, I save the current dungeon (either the loaded one, or 
+the new one).
+
+9/29 Started making movement functions to generate the monsters' next move. 
+Made one to have the monster go straight towards the player, one to move it 
+randomly, and one to travel along the fastest path.
+
+10/2 Switched from an array of monsters to a 2d, dungeon_y by dungeon_x, array 
+of monsters, using 'n' as a null monster. Made a comparator for the heap.
+
+10/3 Added monsters to heap and remove them based on their turn count. Update 
+their position and generate their new one. Added an int array, IDS, to check if 
+they're dead. If so, skip them. If they're tunneling, have them go through or 
+decrease the hardness of the wall. There's a dumb bug that causes both monsters 
+to die when they collide and I don't understand
+
+10/15 Changed move_pc from the "random" move generator to a ncurses function 
+that takes the users input and moves accordingly
+
+10/17 Add a "m" case to move_pc to call a function i created, "showMenu". this 
+function creates a new window that scrolls upon the up and down keys
+
+10/17 Oh no! A gosh dang bug! The up and down arrow keys arent being recognized 
+in the switch case "case KEY_UP". After some research, i found its because of 
+something where KEY_UP is returning like 3 things or something, the first of 
+which being '27'
+
+10/17 Fixed ^. Added the line keypad("window_name", true)
+
+10/17 Added stairs. Another switch case. Set nextPos to an impossible position 
+to indicate in my main that i need to make a new dungeon
+
+10/22 Began porting to c++. Made every struct a class and added casts 
+everywhere there were return null pointers.
+
+10/23 Made a map_fog terrain map. When the player is placed it updates the 
+fog_map with every space within 3 of the player getting set equal to the normal 
+map. As he moves it updates.
+
+10/24 Teleporting! Just print out a * character at the player position. Take 
+arrow key input to move it. When a non-arrow key button is pressed, set player 
+position equal to the *. ez pz
+
+10/24 Changed slightly to place player to the left of the curser if the curser 
+is on a monster
+
+11/6 Started with the professor's 1.07 solution
+
+11/6 Changed the npc monster generation to pick a random monster description. 
+If it passes the rarity check we make it. If its unique, i remove it from the 
+monster description list and add it to a "living unique monsters" vector. when 
+a monster dies we check if it is unique. if it is, we remove that monster from 
+the living unique monsters list.
+
+11/6 when a new dungeon is made i add the living unique monsters back to the 
+monster descriptions so they can appear again
+
+11/7 created object class.
+
+11/10 started with the Proffesor's code
+
+11/10 The pc can now pick up items by walking over them. they go his inventory
+
+11/10 clicking 'w' moves the object at that index from his inventory to his 
+equipped array in the correct spot. If there's an item there, the old item goes 
+back to inventory
+
+11/11 't' move item from equipped to inventory. 'd' moves item from inventory 
+back to obj_map. 'x' deletes item.
+
+11/15 Did all the other stuff. If a npc tries to move to s spot occupied by 
+another npc, they switch spots 
+
+12/01 Added strength, dextarity, constitution, and sight stats to the pc. 
+Strength increases damage by 10% for each skill point. Dexterity increases 
+speed by 5% for each point. Sight increase vision distance by one grid space. 
+Constitution increases max health by 25% for each point.
+
+12/01 Added a spend_skill_point function to the io class. By clicking 'a' you 
+can select a stat to add a point to. 
+
+12/03 Added dungeon levels. Monster descriptions now have a level requirement. 
+Going through the dungeon via the up-staircases you increase the dungeon level 
+by one.
